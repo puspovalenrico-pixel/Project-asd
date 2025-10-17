@@ -1,0 +1,194 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <string>
+#include <cmath>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
+#include <limits>
+
+using namespace std;
+
+string toLowerCase(string str) {
+    transform(str.begin(), str.end(), str.begin(),
+              [](unsigned char c) { return tolower(c); });
+    return str;
+}
+
+void animasiTeks(const string& teks, int delayMs = 40) {
+    for (char c : teks) {
+        cout << c << flush;
+        this_thread::sleep_for(chrono::milliseconds(delayMs));
+    }
+    cout << endl;
+}
+
+const double KURS_DOLLAR = 16000.0;  // Kurs tetap untuk demo
+
+void konversiRupiahKeDollar() {
+    double rupiah;
+    while (true) {
+        cout << "\nMasukkan jumlah Rupiah: ";
+        if (cin >> rupiah) {
+            if (rupiah < 0) {
+                cout << "Masukkan nilai positif!\n";
+            } else {
+                double dollar = rupiah / KURS_DOLLAR;
+                cout << "Hasil konversi: $ " << fixed << setprecision(2) << dollar << endl;
+                return;
+            }
+        } else {
+            cout << "Input tidak valid! Masukkan angka.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
+void hitungDiskon() {
+    double harga, persen;
+    while (true) {
+        cout << "\nMasukkan harga barang (Rp): ";
+        if (cin >> harga && harga >= 0) break;
+        cout << "Input tidak valid! Masukkan angka positif.\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    while (true) {
+        cout << "Masukkan persen diskon (contoh: 20): ";
+        if (cin >> persen && persen >= 0) {
+            double hasil = harga - (harga * persen / 100);
+            cout << "Harga setelah diskon: Rp " << fixed << setprecision(2) << hasil << endl;
+            return;
+        } else {
+            cout << "Input tidak valid! Masukkan angka positif.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
+void hitungUntungRugi() {
+    double beli, jual;
+    while (true) {
+        cout << "\nMasukkan harga beli: ";
+        if (cin >> beli && beli >= 0) break;
+        cout << "Input tidak valid! Masukkan angka positif.\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    while (true) {
+        cout << "Masukkan harga jual: ";
+        if (cin >> jual && jual >= 0) {
+            double selisih = jual - beli;
+            if (selisih > 0)
+                cout << "Keuntungan: Rp " << fixed << setprecision(2) << selisih << endl;
+            else if (selisih < 0)
+                cout << "Kerugian: Rp " << fixed << setprecision(2) << -selisih << endl;
+            else
+                cout << "Tidak ada keuntungan maupun kerugian." << endl;
+            return;
+        } else {
+            cout << "Input tidak valid! Masukkan angka positif.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
+void hitungTabunganMasaDepan() {
+    double tabunganAwal, bunga;
+    int tahun;
+
+    while (true) {
+        cout << "\nMasukkan tabungan awal (Rp): ";
+        if (cin >> tabunganAwal && tabunganAwal >= 0) break;
+        cout << "Input tidak valid! Masukkan angka positif.\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    while (true) {
+        cout << "Masukkan suku bunga (%): ";
+        if (cin >> bunga && bunga >= 0) break;
+        cout << "Input tidak valid! Masukkan angka positif.\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    while (true) {
+        cout << "Masukkan jangka waktu (tahun): ";
+        if (cin >> tahun && tahun >= 0) {
+            double hasil = tabunganAwal * pow(1 + bunga / 100, tahun);
+            cout << "Total tabungan setelah " << tahun << " tahun: Rp "
+                 << fixed << setprecision(2) << hasil << endl;
+            return;
+        } else {
+            cout << "Input tidak valid! Masukkan angka positif.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
+
+void tampilkanMenu() {
+    cout << "\n=== MENU KALKULATOR KEUANGAN ===" << endl;
+    cout << "1. Konversi Rupiah ke Dollar" << endl;
+    cout << "2. Hitung Diskon" << endl;
+    cout << "3. Hitung Untung/Rugi" << endl;
+    cout << "4. Hitung Tabungan Masa Depan" << endl;
+    cout << "5. Keluar" << endl;
+    cout << "Pilih menu (1-5): ";
+}
+
+
+int main() {
+    bool restart = true;
+
+    while (restart) {
+        animasiTeks("\n===========================================", 30);
+        animasiTeks("   SELAMAT DATANG DI KALKULATOR KEUANGAN   ", 60);
+        animasiTeks("        Dibuat Oleh Kelompok 1             ", 40);
+        animasiTeks("===========================================", 30);
+
+        int pilihan;
+        do {
+            tampilkanMenu();
+            if (cin >> pilihan) {
+                switch (pilihan) {
+                    case 1: konversiRupiahKeDollar(); break;
+                    case 2: hitungDiskon(); break;
+                    case 3: hitungUntungRugi(); break;
+                    case 4: hitungTabunganMasaDepan(); break;
+                    case 5:
+                        cout << "\nTerima kasih telah menggunakan kalkulator keuangan!\n";
+                        cout << "Apakah Anda ingin restart program? (ya/tidak): ";
+                        {
+                            string jawab;
+                            cin >> jawab;
+                            if (toLowerCase(jawab) == "ya") {
+                                restart = true;
+                            } else {
+                                restart = false;
+                                cout << "Program berakhir. Sampai jumpa!\n";
+                            }
+                        }
+                        break;
+                    default:
+                        cout << "Pilihan tidak valid. Silakan coba lagi.\n";
+                        break;
+                }
+            } else {
+                cout << "Input tidak valid! Masukkan angka.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        } while (pilihan != 5);
+    }
+
+    return 0;
+}
